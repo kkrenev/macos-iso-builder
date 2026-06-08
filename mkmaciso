@@ -881,6 +881,20 @@ download_modern_macos() {
     
     fi
     
+    if [ "$version_num" = "14" ]; then
+        local installassistant_url
+        installassistant_url="https://swcdn.apple.com/content/downloads/62/31/042-78233-A_YIMC5ZQM8T/yj7iay56cmvc2cux0qm55lfweb2u90euyo/InstallAssistant.pkg"
+        log_info "Pinned Sonoma version for this fork: 14.3 (23D56)"
+        log_info "Trying direct Apple InstallAssistant.pkg URL..."
+        if curl --fail --location --retry 2 --connect-timeout 10 --progress-bar "$installassistant_url" -o "$WORK_DIR/InstallAssistant.pkg"; then
+            log_info "Installing downloaded InstallAssistant.pkg..."
+            sudo installer -pkg "$WORK_DIR/InstallAssistant.pkg" -target /
+            return $?
+        fi
+        log_error "Direct Sonoma 14.3 InstallAssistant.pkg download failed"
+        return 1
+    fi
+
     # Use softwareupdate for macOS Big Sur and newer
     # Check CPU architecture compatibility for softwareupdate
     if [ "$CPU_ARCH" = "x86_64" ] && [ "$KERNEL_VERSION" -lt 20 ]; then
@@ -908,12 +922,7 @@ download_modern_macos() {
     
     # Get latest installer version
     local selected_version_number
-    if [ "$version_num" = "14" ]; then
-        selected_version_number="14.3"
-        log_info "Pinned Sonoma version for this fork: $selected_version_number"
-    else
     selected_version_number=$(grep -i "$version_name" "$WORK_DIR/installers.txt" | grep -iv "beta" | head -1 | sed -n 's/.*Version: \([^,]*\).*/\1/p')
-    fi
     
     if [ -z "$selected_version_number" ]; then
         log_error "macOS $version_name ($version_num) is not available for download on this system"
