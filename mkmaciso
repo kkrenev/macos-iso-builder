@@ -883,15 +883,15 @@ download_modern_macos() {
     
     if [ "$version_num" = "14" ]; then
         local installassistant_url
-        installassistant_url="https://swcdn.apple.com/content/downloads/62/31/042-78233-A_YIMC5ZQM8T/yj7iay56cmvc2cux0qm55lfweb2u90euyo/InstallAssistant.pkg"
-        log_info "Pinned Sonoma version for this fork: 14.3 (23D56)"
+        installassistant_url="https://swcdn.apple.com/content/downloads/43/05/093-92756-A_8KCV583EO6/rk4pkpm81lfh7ee76z8qupc8jtoo4nrde1/InstallAssistant.pkg"
+        log_info "Pinned Sonoma version for this fork: 14.8.2 (23J126)"
         log_info "Trying direct Apple InstallAssistant.pkg URL..."
         if curl --fail --location --retry 2 --connect-timeout 10 --progress-bar "$installassistant_url" -o "$WORK_DIR/InstallAssistant.pkg"; then
             log_info "Installing downloaded InstallAssistant.pkg..."
             sudo installer -pkg "$WORK_DIR/InstallAssistant.pkg" -target /
             return $?
         fi
-        log_error "Direct Sonoma 14.3 InstallAssistant.pkg download failed"
+        log_error "Direct Sonoma 14.8.2 InstallAssistant.pkg download failed"
         return 1
     fi
 
@@ -1622,4 +1622,3 @@ fi
 
 # Run main function
 main
-
